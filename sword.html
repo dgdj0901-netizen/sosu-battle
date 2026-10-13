@@ -334,11 +334,11 @@ body.compact .banner{aspect-ratio:auto;height:96px;object-fit:cover;object-posit
           <label class="mode"><input type="radio" name="mode" value="normal" id="m-normal">
             <span class="name">보통</span>
             <span class="desc">소수 두 자리 ÷ 소수 두 자리, 몫은 자연수</span>
-            <span class="ex">11.88 ÷ 3.96 = 3</span></label>
+            <span class="ex">2.56 ÷ 0.16 = 16</span></label>
           <label class="mode"><input type="radio" name="mode" value="hard" id="m-hard">
             <span class="name">조금 어려움</span>
-            <span class="desc">자연수 ÷ 소수, 몫은 자연수</span>
-            <span class="ex">58 ÷ 7.25 = 8</span></label>
+            <span class="desc">소수 한 자리·두 자리와 자연수가 섞여 나와요, 몫은 자연수</span>
+            <span class="ex">2.4 ÷ 0.16 = 15 · 52 ÷ 6.5 = 8</span></label>
         
         </fieldset>
 
@@ -770,39 +770,32 @@ function parse4(raw){
   if(fp.length>4){ if(/[^0]/.test(fp.slice(4))) return -1; fp=fp.slice(0,4); }
   return parseInt(ip||"0",10)*10000+parseInt(fp.padEnd(4,"0"),10);
 }
-function genEasy(){
-  /* 소수 한 자리 ÷ 소수 한 자리 = 자연수 (예: 7.8 ÷ 0.6 = 13, 459.2 ÷ 16.4 = 28) */
-  for(;;){
-    const v10=Math.random()<0.4?ri(2,9):ri(11,169); if(v10%10===0) continue;
-    const q=ri(2,30); const d10=q*v10;
-    if(d10%10===0||d10>9999) continue;
-    return {a:fmt(d10,1),b:fmt(v10,1),ans4:q*10000,ansText:String(q),base:10,label:"소수 한 자리 ÷ 소수 한 자리"};
-  }
-}
-function genNormal(){
-  /* 소수 두 자리 ÷ 소수 두 자리 = 자연수 (예: 11.88 ÷ 3.96 = 3, 2.56 ÷ 0.16 = 16) */
-  for(;;){
-    const v100=ri(11,999); if(v100%10===0) continue;
-    const q=ri(2,30); const d100=q*v100;
-    if(d100%10===0||d100>99999) continue;
-    return {a:fmt(d100,2),b:fmt(v100,2),ans4:q*10000,ansText:String(q),base:15,label:"소수 두 자리 ÷ 소수 두 자리"};
-  }
-}
-function genHard(){
-  /* 자연수 ÷ 소수 = 자연수 (예: 52 ÷ 6.5 = 8, 58 ÷ 7.25 = 8) */
-  const twoPlace=Math.random()<0.45;
-  for(;;){
-    if(twoPlace){
-      // 소수 두 자리 나누는 수: 0.25, 0.75, 1.25 … 9.75 (몫은 4의 배수)
-      const v100=25*(2*ri(0,19)+1); const q=4*ri(1,10);
-      const n=q*v100/100; if(n<2||n>999) continue;
-      return {a:String(n),b:fmt(v100,2),ans4:q*10000,ansText:String(q),base:20,label:"자연수 ÷ 소수"};
-    }
-    const v10=ri(11,99); if(v10%10===0) continue;
-    const q=ri(2,40); if((q*v10)%10!==0) continue;
-    const n=q*v10/10; if(n>999) continue;
-    return {a:String(n),b:fmt(v10,1),ans4:q*10000,ansText:String(q),base:15,label:"자연수 ÷ 소수"};
-  }
+/* ===== 나눗셈 문제 규칙 =====
+   · 모든 수의 자연수 부분은 두 자리(십의 자리)까지
+   · 소수 두 자리 수는 10보다 작게 (예: 0.16, 3.96)
+   · 몫은 항상 자연수 */
+function pick1(){ for(;;){ const v=Math.random()<0.85?ri(2,99):ri(101,199); if(v%10!==0) return v; } }  // 0.2 ~ 19.9
+function pick2(){ for(;;){ const v=ri(11,999); if(v%10!==0) return v; } }                            // 0.11 ~ 9.99
+function mkDiv(a,b,q,label,base){ return {a,b,ans4:q*10000,ansText:String(q),label,base}; }
+function d1d1(base){ for(;;){ const v=pick1(), q=ri(2,30), d=q*v; if(d%10===0||d>999) continue;
+  return mkDiv(fmt(d,1),fmt(v,1),q,"소수 한 자리 ÷ 소수 한 자리",base); } }
+function d2d2(base){ for(;;){ const v=pick2(), q=ri(2,30), d=q*v; if(d%10===0||d>999) continue;
+  return mkDiv(fmt(d,2),fmt(v,2),q,"소수 두 자리 ÷ 소수 두 자리",base); } }
+function d1d2(base){ for(;;){ const v=pick2(), q=ri(2,30); if((q*v)%10!==0) continue; const d=q*v/10; if(d%10===0||d>999) continue;
+  return mkDiv(fmt(d,1),fmt(v,2),q,"소수 한 자리 ÷ 소수 두 자리",base); } }
+function nd1(base){ for(;;){ const v=pick1(), q=ri(2,40); if((q*v)%10!==0) continue; const n=q*v/10; if(n>99) continue;
+  return mkDiv(String(n),fmt(v,1),q,"자연수 ÷ 소수 한 자리",base); } }
+function nd2(base){ for(;;){ const v=pick2(), q=ri(2,40); if((q*v)%100!==0) continue; const n=q*v/100; if(n>99) continue;
+  return mkDiv(String(n),fmt(v,2),q,"자연수 ÷ 소수 두 자리",base); } }
+function genEasy(){ return d1d1(10); }   // 예: 7.8 ÷ 0.6 = 13
+function genNormal(){ return d2d2(15); } // 예: 2.56 ÷ 0.16 = 16
+function genHard(){                      // 여러 종류를 섞어서
+  const r=Math.random();
+  if(r<0.30) return d1d2(20);            // 예: 2.4 ÷ 0.16 = 15
+  if(r<0.55) return nd1(20);             // 예: 52 ÷ 6.5 = 8
+  if(r<0.75) return nd2(20);             // 예: 9 ÷ 2.25 = 4
+  if(r<0.875) return d1d1(20);
+  return d2d2(20);
 }
 const GEN={easy:genEasy,normal:genNormal,hard:genHard};
 
