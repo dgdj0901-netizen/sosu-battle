@@ -97,14 +97,15 @@ body.compact .banner{aspect-ratio:auto;height:96px;object-fit:cover;object-posit
 .namebox input.bad{border-color:var(--no);animation:shake .3s}
 .msg{margin:6px 0 0;font-size:15px;min-height:1.4em}
 .msg.no{color:var(--no)} .msg.ok{color:var(--ok)}
-.modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 20px;border:0;padding:0}
+.modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 20px;border:0;padding:0}
 @media (max-width:640px){.modes{grid-template-columns:minmax(0,1fr)}}
 .mode{position:relative;display:flex;flex-direction:column;gap:4px;border:2px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer;background:var(--bg-2);transition:border-color .15s,transform .15s}
 .mode:hover{transform:translateY(-2px)}
 .mode input{position:absolute;opacity:0;pointer-events:none}
 .mode:nth-of-type(1){--mc:#5fdc9c}
 .mode:nth-of-type(2){--mc:#59c8ff}
-.mode:nth-of-type(3){--mc:#ff8a6b}
+.mode:nth-of-type(3){--mc:#b48cff}
+.mode:nth-of-type(4){--mc:#ff8a6b}
 .mode:has(input:checked){border-color:var(--mc);background:linear-gradient(180deg,color-mix(in srgb,var(--mc) 18%,var(--bg-2)),var(--bg-2))}
 .mode:has(input:focus-visible){outline:3px solid var(--mc);outline-offset:2px}
 .mode .name{font-family:var(--f-display);font-size:24px;line-height:1.1;color:var(--mc)}
@@ -229,7 +230,8 @@ body.compact .banner{aspect-ratio:auto;height:96px;object-fit:cover;object-posit
 .live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ok);animation:pulse 1s infinite alternate}
 .live.local{color:var(--ink-soft);border-color:var(--line)}
 .live.local::before{background:var(--ink-soft);animation:none}
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--bg-2);padding:4px;border-radius:12px;margin:12px 0}
+.tabs button{font-size:14.5px!important;white-space:nowrap;padding-inline:2px!important}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:var(--bg-2);padding:4px;border-radius:12px;margin:12px 0}
 .tabs button{border:0;background:transparent;border-radius:8px;padding:6px 0;font-family:var(--f-display);font-size:16px;color:var(--ink-soft)}
 .tabs button[aria-selected="true"]{background:var(--panel-2);color:var(--ink);box-shadow:0 0 0 1px var(--line)}
 .ranks{list-style:none;margin:0;padding:0;display:grid;gap:2px}
@@ -366,6 +368,10 @@ body.compact .banner{aspect-ratio:auto;height:96px;object-fit:cover;object-posit
             <span class="name">보통</span>
             <span class="desc">소수 두 자리 ÷ 소수 두 자리, 몫은 자연수</span>
             <span class="ex">2.56 ÷ 0.16 = 16</span></label>
+          <label class="mode"><input type="radio" name="mode" value="normal2" id="m-normal2">
+            <span class="name">보통 2</span>
+            <span class="desc">소수 두 자리 ÷ 소수 한 자리, 몫은 소수 한 자리</span>
+            <span class="ex">9.24 ÷ 2.1 = 4.4</span></label>
           <label class="mode"><input type="radio" name="mode" value="hard" id="m-hard">
             <span class="name">조금 어려움</span>
             <span class="desc">소수 한 자리·두 자리와 자연수가 섞여 나와요, 몫은 자연수</span>
@@ -461,6 +467,7 @@ body.compact .banner{aspect-ratio:auto;height:96px;object-fit:cover;object-posit
       <div class="tabs" role="tablist" id="tabs">
         <button role="tab" data-mode="easy" aria-selected="true">쉬움</button>
         <button role="tab" data-mode="normal" aria-selected="false">보통</button>
+        <button role="tab" data-mode="normal2" aria-selected="false">보통 2</button>
         <button role="tab" data-mode="hard" aria-selected="false">조금 어려움</button>
       </div>
       <ol class="ranks" id="ranks"></ol>
@@ -493,7 +500,7 @@ const WRONG_DOWN = 5;         // 틀렸을 때 깎이는 수치
 
 (function(){
 "use strict";
-const MODES={easy:{label:"쉬움"},normal:{label:"보통"},hard:{label:"조금 어려움"}};
+const MODES={easy:{label:"쉬움"},normal:{label:"보통"},normal2:{label:"보통 2"},hard:{label:"조금 어려움"}};
 const $=id=>document.getElementById(id);
 const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
 const REDUCED=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -835,7 +842,7 @@ function parse4(raw){
    · 몫은 항상 자연수 */
 function pick1(){ for(;;){ const v=Math.random()<0.85?ri(2,99):ri(101,199); if(v%10!==0) return v; } }  // 0.2 ~ 19.9
 function pick2(){ for(;;){ const v=ri(11,999); if(v%10!==0) return v; } }                            // 0.11 ~ 9.99
-function mkDiv(a,b,q,label,base){ return {a,b,ans4:q*10000,ansText:String(q),label,base}; }
+function mkDiv(a,b,q,label,base,tenth){ return tenth?{a,b,ans4:q*1000,ansText:fmt(q,1),label,base}:{a,b,ans4:q*10000,ansText:String(q),label,base}; }
 function d1d1(base){ for(;;){ const v=pick1(), q=ri(2,30), d=q*v; if(d%10===0||d>999) continue;
   return mkDiv(fmt(d,1),fmt(v,1),q,"소수 한 자리 ÷ 소수 한 자리",base); } }
 function d2d2(base){ for(;;){ const v=pick2(), q=ri(2,30), d=q*v; if(d%10===0||d>999) continue;
@@ -848,6 +855,16 @@ function nd2(base){ for(;;){ const v=pick2(), q=ri(2,40); if((q*v)%100!==0) cont
   return mkDiv(String(n),fmt(v,2),q,"자연수 ÷ 소수 두 자리",base); } }
 function genEasy(){ return d1d1(10); }   // 예: 7.8 ÷ 0.6 = 13
 function genNormal(){ return d2d2(15); } // 예: 2.56 ÷ 0.16 = 16
+function genNormal2(){
+  /* 보통 2: 소수 두 자리 ÷ 소수 한 자리, 몫은 소수 한 자리 (예: 1.36 ÷ 3.4 = 0.4, 9.24 ÷ 2.1 = 4.4)
+     나누어지는 수는 10보다 작게 해서 계산이 너무 길어지지 않게 */
+  for(;;){
+    const v=ri(2,99); if(v%10===0) continue;   // 나누는 수 0.2 ~ 9.9
+    const q=ri(2,99); if(q%10===0) continue;   // 몫 0.2 ~ 9.9 (소수 한 자리)
+    const d=q*v; if(d%10===0||d>999) continue; // 나누어지는 수: 소수 두 자리, 10 미만
+    return mkDiv(fmt(d,2),fmt(v,1),q,"소수 두 자리 ÷ 소수 한 자리",18,true);
+  }
+}
 function genHard(){                      // 여러 종류를 섞어서
   const r=Math.random();
   if(r<0.30) return d1d2(20);            // 예: 2.4 ÷ 0.16 = 15
@@ -856,7 +873,7 @@ function genHard(){                      // 여러 종류를 섞어서
   if(r<0.875) return d1d1(20);
   return d2d2(20);
 }
-const GEN={easy:genEasy,normal:genNormal,hard:genHard};
+const GEN={easy:genEasy,normal:genNormal,normal2:genNormal2,hard:genHard};
 
 
 /* =========================================================
