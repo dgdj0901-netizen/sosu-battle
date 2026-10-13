@@ -213,7 +213,7 @@ body.compact .banner{aspect-ratio:auto;height:96px;object-fit:cover;object-posit
 .result-stage svg{width:100%;height:100%;overflow:visible}
 .final{font-family:var(--f-num);font-weight:600;font-size:clamp(56px,11vw,84px);line-height:.95;background:linear-gradient(180deg,#fff,var(--tier));-webkit-background-clip:text;background-clip:text;color:transparent}
 .final-tier{font-family:var(--f-display);font-size:28px;color:var(--tier)}
-.facts{display:grid;grid-template-columns:repeat(3,auto);gap:4px 18px;font-size:14px;color:var(--ink-soft);margin-top:8px}
+.facts{display:grid;grid-template-columns:repeat(4,auto);gap:4px 18px;font-size:14px;color:var(--ink-soft);margin-top:8px}
 .facts b{display:block;font-family:var(--f-num);font-size:20px;color:var(--ink)}
 .review summary{cursor:pointer;font-family:var(--f-display);font-size:18px}
 .review ol{margin:10px 0 0;padding-left:1.4em;font-family:var(--f-num);font-size:15px;display:grid;gap:4px}
@@ -287,9 +287,40 @@ body.compact .banner{aspect-ratio:auto;height:96px;object-fit:cover;object-posit
 @keyframes rune{0%{opacity:.35}100%{opacity:1}}
 
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+
+/* ===== 문 닫힘 화면 ===== */
+.gate{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:16px;background:rgba(10,8,16,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.gate-card{max-width:420px;width:100%;text-align:center;background:var(--card,var(--panel));color:var(--ink);border:1px solid var(--line);border-radius:20px;padding:30px 22px;box-shadow:0 24px 60px -20px rgba(0,0,0,.8)}
+.gate-card svg{width:64px;height:64px;color:var(--ember,var(--pen))}
+.gate-card h2{font-family:var(--f-display);font-weight:400;font-size:32px;line-height:1.15;margin:10px 0 6px}
+.gate-card p{margin:0;color:var(--ink-soft);font-size:16px}
+
+/* ===== 대박 강화 / 감점 ===== */
+.floater.minus{background:linear-gradient(180deg,#ffd0d0,#ff3d3d);-webkit-background-clip:text;background-clip:text;font-size:40px;filter:drop-shadow(0 2px 0 rgba(0,0,0,.7)) drop-shadow(0 0 12px rgba(255,61,61,.7));animation:failtext 1.2s ease-out forwards}
+.jackpot{position:absolute;inset:0;z-index:8;pointer-events:none;border-radius:18px;overflow:hidden;display:grid;place-items:center;animation:jpIn 1.8s ease-out forwards}
+.jackpot .bg{position:absolute;inset:-40%;background:conic-gradient(from 0deg,#ff6b6b,#ffd25e,#5fdc9c,#59c8ff,#c07bff,#ff6b6b);opacity:.45;filter:blur(40px);animation:spin 1.4s linear infinite}
+.jackpot .dim{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(255,255,255,.15),rgba(10,8,16,.75) 70%)}
+.jackpot .rays{position:absolute;left:50%;top:50%;width:1000px;height:1000px;margin:-500px 0 0 -500px;background:repeating-conic-gradient(from 0deg,rgba(255,240,180,.55) 0 5deg,transparent 5deg 15deg);mask:radial-gradient(circle,#000 0%,transparent 58%);-webkit-mask:radial-gradient(circle,#000 0%,transparent 58%);animation:spin 3s linear infinite}
+.jackpot .strobe{position:absolute;inset:0;background:radial-gradient(circle,#fff,rgba(255,240,180,.6) 40%,transparent 75%);opacity:0;animation:strobe 1s ease-out}
+.jackpot .txt{position:relative;text-align:center;animation:jpPop 1.8s cubic-bezier(.2,1.6,.4,1) forwards}
+.jackpot .t1{font-family:var(--f-display);font-size:clamp(44px,9vw,80px);line-height:1;background:linear-gradient(90deg,#ff6b6b,#ffd25e,#5fdc9c,#59c8ff,#c07bff,#ff6b6b);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rbShift .5s linear infinite;filter:drop-shadow(0 4px 0 #1a0f06) drop-shadow(0 0 24px rgba(255,255,255,.8))}
+.jackpot .t2{font-family:var(--f-num);font-weight:600;font-size:clamp(56px,11vw,100px);line-height:1;margin-top:6px;background:linear-gradient(180deg,#fffbe6,#ffd25e 55%,#e09a1c);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 0 #3a2400) drop-shadow(0 0 30px #ffd25e)}
+.jackpot .sp{position:absolute;width:18px;height:18px;background:#fff;clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);animation:twinkle .5s ease-in-out infinite;filter:drop-shadow(0 0 6px #fff)}
+.lvl.jp{animation:lvlpop .5s cubic-bezier(.2,1.8,.4,1) 3}
+@keyframes jpIn{0%{opacity:0}6%{opacity:1}85%{opacity:1}100%{opacity:0}}
+@keyframes jpPop{0%{transform:scale(.2) rotate(-12deg);opacity:0}18%{transform:scale(1.25) rotate(3deg);opacity:1}30%{transform:scale(.95) rotate(-1deg)}40%{transform:scale(1.05)}55%,100%{transform:scale(1)}}
+@keyframes strobe{0%{opacity:.95}25%{opacity:0}45%{opacity:.6}70%{opacity:0}}
+@keyframes rbShift{to{background-position:200% 0}}
 </style>
 </head>
 <body>
+<div class="gate" id="gate" hidden role="alertdialog" aria-labelledby="gateTitle">
+  <div class="gate-card">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+    <h2 id="gateTitle">지금은 문을 닫았어요</h2>
+    <p>선생님이 열어 주시면 바로 다시 할 수 있어요.</p>
+  </div>
+</div>
 <div class="embers" id="embers" aria-hidden="true"></div>
 <canvas id="fx" aria-hidden="true"></canvas>
 
@@ -310,9 +341,9 @@ body.compact .banner{aspect-ratio:auto;height:96px;object-fit:cover;object-posit
       <div id="vStart">
         <p class="eyebrow">규칙</p>
         <ul class="rules">
-          <li><b>정답이면 강화!</b>한 문제 맞힐 때마다 <span class="hl">+5 ~ +10</span> 랜덤 강화</li>
-          <li><b>가끔은 실패</b><span class="hl">15%</span> 확률로 강화 실패. 대신 수치는 깎이지 않아요.</li>
-          <li><b>시간은 90초</b>종이에 천천히 풀어도 괜찮아요. 틀리면 그 문제만 강화 없음.</li>
+          <li><b>정답이면 강화!</b>맞힐 때마다 <span class="hl">+5 ~ +10</span> 랜덤 강화. <span class="hl">10%</span> 확률로 <span class="hl">대박 +20!</span></li>
+          <li><b>실패와 감점</b><span class="hl">15%</span> 확률로 강화 실패(수치는 그대로). 문제를 틀리면 <span class="hl">−5</span>!</li>
+          <li><b>시간은 120초</b>종이에 천천히 풀어도 괜찮아요. 모르는 문제는 넘기기(감점 없음).</li>
         </ul>
 
         <p class="eyebrow">검 도감</p>
@@ -346,7 +377,7 @@ body.compact .banner{aspect-ratio:auto;height:96px;object-fit:cover;object-posit
       <!-- PLAY -->
       <div id="vPlay" hidden>
         <div class="hud">
-          <div class="stat"><small>남은 시간</small><strong id="tLeft">90</strong></div>
+          <div class="stat"><small>남은 시간</small><strong id="tLeft">120</strong></div>
           <div class="timebar" id="timebar"><i id="timefill"></i></div>
           <div class="stat right"><small>맞힌 문제</small><strong id="cOk">0</strong></div>
         </div>
@@ -381,18 +412,20 @@ body.compact .banner{aspect-ratio:auto;height:96px;object-fit:cover;object-posit
               <button class="btn ghost" type="button" id="btnSkip">넘기기</button>
             </form>
             <div class="odds">
-              <span><i style="background:var(--gold)"></i>강화 성공 85% · +5 ~ +10</span>
-              <span><i style="background:#8a8399"></i>강화 실패 15%</span>
+              <span><i style="background:var(--gold)"></i>강화 75% · +5 ~ +10</span>
+              <span><i style="background:linear-gradient(90deg,#ff6b6b,#ffd25e,#59c8ff,#c07bff)"></i>대박 10% · +20</span>
+              <span><i style="background:#8a8399"></i>실패 15%</span>
+              <span><i style="background:var(--no)"></i>틀리면 −5</span>
             </div>
           </div>
         </div>
-        <div class="tally"><span><b id="pName"></b></span><span>강화 성공 <b id="cWin">0</b> · 실패 <b id="cFail">0</b> · 틀림 <b id="cNo">0</b></span></div>
+        <div class="tally"><span><b id="pName"></b></span><span>강화 <b id="cWin">0</b> · 대박 <b id="cJp">0</b> · 실패 <b id="cFail">0</b> · 틀림 <b id="cNo">0</b></span></div>
         <div class="countdown" id="countdown" hidden><span id="cdNum">3</span></div>
       </div>
 
       <!-- RESULT -->
       <div id="vResult" hidden>
-        <p class="eyebrow" id="rMode">쉬움 · 90초</p>
+        <p class="eyebrow" id="rMode">쉬움 · 120초</p>
         <div class="result-head">
           <div class="result-stage"><div class="sv" id="rSword"></div></div>
           <div>
@@ -401,6 +434,7 @@ body.compact .banner{aspect-ratio:auto;height:96px;object-fit:cover;object-posit
             <div class="facts">
               <span><b id="rOk">0</b>맞힘</span>
               <span><b id="rWin">0</b>강화 성공</span>
+              <span><b id="rJp">0</b>대박 강화</span>
               <span><b id="rFail">0</b>강화 실패</span>
             </div>
           </div>
@@ -443,9 +477,12 @@ const firebaseConfig = {
 };
 
 /* ===== 게임 설정 (숫자만 바꿔서 조절할 수 있어요) ===== */
-const GAME_SECONDS = 90;      // 제한 시간
+const GAME_SECONDS = 120;     // 제한 시간
 const MIN_UP = 5, MAX_UP = 10; // 정답일 때 강화 수치 범위
 const FAIL_RATE = 0.15;       // 강화 실패 확률 (0.15 = 15%)
+const JACKPOT_RATE = 0.10;    // 대박 강화 확률 (0.10 = 10%)
+const JACKPOT_UP = 20;        // 대박 강화 수치
+const WRONG_DOWN = 5;         // 틀렸을 때 깎이는 수치
 /* ===================================================== */
 
 (function(){
@@ -661,6 +698,24 @@ const Sfx={
     this.tone(330,{type:"sawtooth",t:.18,dur:.28,vol:.12,to:250,lp:1200,lpTo:500});
     this.tone(262,{type:"sawtooth",t:.48,dur:.55,vol:.12,to:140,lp:1000,lpTo:300});
   },
+  /* 대박 강화: 슬롯머신 아르페지오 + 큰 화음 + 종소리 */
+  jackpot(){
+    const base=[523,659,784,1047,1319,1568,2093];
+    for(let i=0;i<14;i++){ const f=base[i%7]*(i>=7?2:1); this.tone(f,{type:"square",t:i*.045,dur:.09,vol:.045,lp:4000}); this.tone(f,{type:"triangle",t:i*.045,dur:.12,vol:.08}); }
+    this.tone(80,{type:"sine",t:.64,dur:.9,vol:.55,to:45});
+    this.noise({type:"lowpass",f:1200,fTo:150,t:.64,dur:.6,vol:.3});
+    [1047,1319,1568,2093].forEach(f=>{ this.tone(f,{type:"triangle",t:.66,dur:1.5,vol:.11}); this.tone(f*2,{type:"sine",t:.66,dur:1.1,vol:.04}); this.tone(f,{type:"sawtooth",t:.66,dur:1.2,vol:.03,lp:3000,lpTo:800}); });
+    [0,.16,.32,.48].forEach(d=>{ [2637,3951,5274].forEach((f,j)=>this.tone(f,{type:"sine",t:.95+d,dur:.5-j*.1,vol:.08-j*.02})); });
+    for(let i=0;i<20;i++) this.tone(2800+Math.random()*3500,{type:"sine",t:.7+i*.05,dur:.12,vol:.035});
+    this.noise({type:"highpass",f:7000,t:.66,dur:1.6,vol:.09,attack:.1});
+  },
+  /* 틀려서 −5: 내려가는 "띠리리↓" */
+  minus(){
+    this.tone(440,{type:"square",dur:.11,vol:.06,lp:1500});
+    this.tone(349,{type:"square",t:.1,dur:.11,vol:.06,lp:1300});
+    this.tone(262,{type:"sawtooth",t:.2,dur:.4,vol:.08,to:150,lp:900});
+    this.tone(110,{type:"sine",t:.2,dur:.3,vol:.25,to:60});
+  },
   wrong(){ this.tone(170,{type:"square",dur:.12,vol:.07,lp:900}); this.tone(130,{type:"square",t:.12,dur:.2,vol:.07,lp:800}); },
   tick(hi){ this.tone(hi?1320:880,{type:"sine",dur:hi?.35:.12,vol:hi?.25:.18}); },
   warn(){ this.tone(1500,{type:"sine",dur:.06,vol:.08}); },
@@ -700,6 +755,10 @@ const FX={
         const r=p.size*(1+(1-k)*1.6); c.globalAlpha=k*.5; c.fillStyle=p.color; c.beginPath(); c.arc(p.x,p.y,r,0,7); c.fill();
       }else if(p.kind==="chip"){
         c.translate(p.x,p.y); c.rotate(p.rot); c.fillStyle=p.color; c.fillRect(-p.size/2,-p.size/3,p.size,p.size*.66);
+      }else if(p.kind==="coin"){
+        c.translate(p.x,p.y); c.scale(Math.cos(p.rot),1); c.fillStyle="#b9790f"; c.beginPath(); c.arc(0,0,p.size,0,7); c.fill();
+        c.fillStyle=p.color; c.beginPath(); c.arc(0,0,p.size*.8,0,7); c.fill();
+        c.fillStyle="rgba(255,255,255,.7)"; c.fillRect(-p.size*.15,-p.size*.5,p.size*.3,p.size);
       }else if(p.kind==="confetti"){
         c.translate(p.x,p.y); c.rotate(p.rot); c.scale(1,Math.cos(p.rot*3)); c.fillStyle=p.color; c.fillRect(-p.size/2,-p.size/4,p.size,p.size/2);
       }else if(p.kind==="star"){
@@ -800,7 +859,7 @@ const GEN={easy:genEasy,normal:genNormal};
 /* =========================================================
    게임
    ========================================================= */
-const g={mode:"easy",name:"",running:false,level:0,ok:0,no:0,win:0,fail:0,cur:null,end:0,wrong:[],lock:false,lastSec:0};
+const g={mode:"easy",name:"",running:false,level:0,ok:0,no:0,win:0,fail:0,jackpots:0,lost:0,cur:null,end:0,wrong:[],lock:false,lastSec:0};
 function show(v){ ["vStart","vPlay","vResult"].forEach(x=>$(x).hidden=(x!==v)); document.body.classList.toggle("compact",v!=="vStart"); }
 function selectedMode(){ const r=document.querySelector('input[name="mode"]:checked'); return r?r.value:"easy"; }
 function cleanName(s){ return s.replace(/[\u0000-\u001f]/g,"").replace(/\s+/g," ").trim().slice(0,12); }
@@ -820,7 +879,7 @@ function renderSword(){
     $("nextbar").style.width=((g.level-t.at)/(nx.at-t.at)*100)+"%";
   }else{ $("nextTxt").textContent="최고 단계 달성!"; $("nextbar").style.width="100%"; }
 }
-function renderHud(){ $("cOk").textContent=g.ok; $("cWin").textContent=g.win; $("cFail").textContent=g.fail; $("cNo").textContent=g.no; }
+function renderHud(){ $("cJp").textContent=g.jackpots; $("cOk").textContent=g.ok; $("cWin").textContent=g.win; $("cFail").textContent=g.fail; $("cNo").textContent=g.no; }
 function floater(text,fail){
   const el=document.createElement("div"); el.className="floater"+(fail?" fail":""); el.textContent=text;
   $("forge").appendChild(el); setTimeout(()=>el.remove(),1350);
@@ -836,6 +895,50 @@ function tierUpShow(ti){
   box.querySelector(".tname").textContent=t.name+" 획득";
   $("gameCard").appendChild(box); setTimeout(()=>box.remove(),1950);
   burstTierUp(t.c); Sfx.tierUp();
+}
+
+function burstJackpot(){
+  if(REDUCED) return;
+  const p=centerOf($("swordbox"),.4);
+  const card=$("gameCard").getBoundingClientRect();
+  const cx=card.left+card.width/2, cy=card.top+Math.min(card.height,innerHeight)*.42;
+  const rb=["#ff6b6b","#ffd25e","#5fdc9c","#59c8ff","#c07bff","#ffffff"];
+  rb.forEach((c,i)=>FX.add({kind:"ring",x:cx,y:cy,size:10+i*8,grow:260+i*50,color:c,life:.7+i*.08,max:.7+i*.08}));
+  FX.add({kind:"glow",x:cx,y:cy,size:280,color:"#fff6cc",life:.8,max:.8});
+  FX.add({kind:"glow",x:p.x,y:p.y,size:120,color:"#ffd25e",life:.9,max:.9});
+  for(let i=0;i<160;i++){ const a=R(0,Math.PI*2), sp=R(250,900);
+    FX.add({kind:"spark",x:cx,y:cy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,g:380,drag:.975,size:R(2,4.5),color:rb[i%rb.length],life:R(.8,1.6),max:1.6}); }
+  for(let i=0;i<70;i++) FX.add({kind:"coin",x:R(0,innerWidth),y:R(-260,-10),vx:R(-40,40),vy:R(80,260),g:520,size:R(8,14),rot:R(0,6),spin:R(-9,9),color:i%4?"#ffd25e":"#fff2a8",life:R(1.8,2.8),max:2.8});
+  for(let i=0;i<40;i++) FX.add({kind:"star",x:R(0,innerWidth),y:R(0,innerHeight),vx:0,vy:R(-30,-5),size:R(4,12),rot:R(0,3),spin:R(-3,3),color:"#ffffff",life:R(.6,1.8),max:1.8});
+  for(let side=0;side<2;side++) for(let i=0;i<45;i++){
+    const x=side?card.right-10:card.left+10, y=card.top+R(0,80);
+    FX.add({kind:"confetti",x,y,vx:(side?-1:1)*R(150,560),vy:R(-560,-200),g:650,drag:.99,size:R(7,12),rot:R(0,6),spin:R(-10,10),color:rb[(i+side)%rb.length],life:R(1.6,2.6),max:2.6});
+  }
+}
+function burstMinus(){
+  if(REDUCED) return;
+  const p=centerOf($("swordbox"),.45);
+  for(let i=0;i<16;i++){ const a=R(-Math.PI*.9,-Math.PI*.1), sp=R(120,280);
+    FX.add({kind:"chip",x:p.x+R(-10,10),y:p.y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,g:900,size:R(3,6),rot:R(0,6),spin:R(-12,12),color:i%2?"#ff6b6b":"#a33",life:R(.6,1),max:1}); }
+  FX.add({kind:"glow",x:p.x,y:p.y,size:80,color:"rgba(255,61,61,.8)",life:.4,max:.4});
+}
+function jackpotShow(){
+  const box=document.createElement("div"); box.className="jackpot";
+  let sp=""; for(let i=0;i<18;i++) sp+=`<i class="sp" style="left:${(5+Math.random()*90).toFixed(1)}%;top:${(5+Math.random()*90).toFixed(1)}%;animation-delay:${(Math.random()*.5).toFixed(2)}s;transform:scale(${(.5+Math.random()*1.2).toFixed(2)})"></i>`;
+  box.innerHTML=`<div class="bg"></div><div class="dim"></div><div class="rays"></div><div class="strobe"></div>${sp}<div class="txt"><div class="t1">대박 강화!</div><div class="t2">+${JACKPOT_UP}</div></div>`;
+  $("gameCard").appendChild(box); setTimeout(()=>box.remove(),1850);
+}
+function penalty(){
+  const down=Math.min(WRONG_DOWN,g.level);
+  if(down<=0) return false;
+  const before=tierOf(g.level);
+  g.level-=down; g.lost+=down;
+  if(tierOf(g.level)!==before) shownTier=-1;
+  renderSword();
+  const el=document.createElement("div"); el.className="floater minus"; el.textContent="−"+down;
+  $("forge").appendChild(el); setTimeout(()=>el.remove(),1250);
+  restart($("swordbox"),"fail"); restart($("flash"),"fail"); burstMinus(); Sfx.minus();
+  return true;
 }
 
 function nextProblem(){
@@ -864,6 +967,7 @@ function tick(){
 }
 
 function start(){
+  if(!gateOpen){ setGate(false); return; }
   Sfx.init();
   const nameIn=$("nameIn"); const name=cleanName(nameIn.value);
   if(!name){
@@ -873,7 +977,7 @@ function start(){
   }
   nameIn.classList.remove("bad"); $("nameMsg").textContent="";
   try{ localStorage.setItem("dd-name",name); }catch(e){}
-  Object.assign(g,{mode:selectedMode(),name,running:false,level:0,ok:0,no:0,win:0,fail:0,cur:null,wrong:[],lock:true,lastSec:GAME_SECONDS});
+  Object.assign(g,{mode:selectedMode(),name,running:false,level:0,ok:0,no:0,win:0,fail:0,jackpots:0,lost:0,cur:null,wrong:[],lock:true,lastSec:GAME_SECONDS});
   $("pName").textContent=name;
   setTab(g.mode); show("vPlay"); shownTier=-1; renderSword(); renderHud();
   $("tLeft").textContent=GAME_SECONDS; $("timefill").style.transform="scaleX(1)"; $("timebar").classList.remove("low");
@@ -883,7 +987,7 @@ function start(){
   showN(); Sfx.tick(false);
   const iv=setInterval(()=>{
     n--; if(n>0){ showN(); Sfx.tick(false); return; }
-    clearInterval(iv); cd.hidden=true; Sfx.tick(true);
+    clearInterval(iv); cd.hidden=true; if(!gateOpen){ show("vStart"); return; } Sfx.tick(true);
     g.running=true; g.lock=false; g.end=performance.now()+GAME_SECONDS*1000;
     nextProblem(); raf=requestAnimationFrame(tick);
   },700);
@@ -898,10 +1002,20 @@ function submit(e){
   if(v===p.ans4){
     g.ok++;
     Sfx.clang();
-    if(Math.random()<FAIL_RATE){
+    const roll=Math.random();
+    if(roll<FAIL_RATE){
       g.fail++;
       floater("강화 실패…",true); restart($("swordbox"),"fail"); restart($("flash"),"fail"); restart($("gameCard"),"shake");
       cracks(); burstFail(); Sfx.fail();
+    }else if(roll<FAIL_RATE+JACKPOT_RATE){
+      const before=tierOf(g.level);
+      g.level+=JACKPOT_UP; g.win++; g.jackpots++;
+      const ti=tierOf(g.level);
+      if(ti!==before){ shownTier=-1; }
+      renderSword();
+      restart($("swordbox"),"hit"); restart($("flash"),"ok"); restart($("lvl"),"jp"); restart($("gameCard"),"shake");
+      jackpotShow(); burstJackpot(); Sfx.jackpot();
+      if(ti>before) setTimeout(()=>tierUpShow(ti),1800);
     }else{
       const before=tierOf(g.level);
       const up=ri(MIN_UP,MAX_UP); g.level+=up; g.win++;
@@ -918,7 +1032,8 @@ function submit(e){
     g.wrong.push({a:p.a,b:p.b,op:p.op,you:input.value.trim(),right:p.ansText});
     const m=document.createElement("div"); m.className="wrongmsg"; m.textContent="정답은 "+p.ansText;
     $("problem").appendChild(m); setTimeout(()=>m.remove(),1150);
-    input.className="bad"; restart($("problem"),"wrong"); Sfx.wrong();
+    input.className="bad"; restart($("problem"),"wrong");
+    if(!penalty()) Sfx.wrong();
     renderHud(); g.lock=true;
     setTimeout(()=>{ g.lock=false; if(g.running) nextProblem(); },1000);
   }
@@ -940,7 +1055,7 @@ function finish(){
   $("rSword").innerHTML=swordSVG(g.level);
   $("rLevel").textContent="+"+g.level;
   $("rTier").textContent=TIERS[ti].name;
-  $("rOk").textContent=g.ok; $("rWin").textContent=g.win; $("rFail").textContent=g.fail;
+  $("rOk").textContent=g.ok; $("rWin").textContent=g.win; $("rFail").textContent=g.fail; $("rJp").textContent=g.jackpots;
   const list=$("reviewList"); list.textContent="";
   g.wrong.forEach(w=>{
     const li=document.createElement("li");
@@ -1045,8 +1160,27 @@ $("btnMenu").addEventListener("click",()=>{ setTierColor(0); show("vStart"); });
 $("tabs").addEventListener("click",e=>{ const b=e.target.closest("button"); if(b) setTab(b.dataset.mode); });
 $("modes").addEventListener("change",()=>setTab(selectedMode()));
 
+
+/* ---------- 선생님 스위치 (Firebase 콘솔의 config / status / open) ---------- */
+let gateOpen=true;
+function setGate(open){
+  gateOpen=open;
+  $("gate").hidden=open;
+  if(!open && g.running){ g.running=false; cancelAnimationFrame(raf); show("vStart"); }
+}
+function watchGate(){
+  if(!board.db) return;
+  try{
+    onSnapshot(doc(board.db,"config","status"),snap=>{
+      const d=snap.exists()?snap.data():null;
+      setGate(!d || d.open!==false);
+    },err=>console.warn("열림 상태 확인 실패",err));
+  }catch(e){ console.warn(e); }
+}
+
 renderBoard();
 initShared();
+watchGate();
 })();
 </script>
 </body>
