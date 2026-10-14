@@ -95,6 +95,11 @@ body.compact .banner{aspect-ratio:auto;height:96px;object-fit:cover;object-posit
 .namebox input{width:100%;max-width:420px;font-size:20px;padding:12px 14px;border:2px solid var(--line);border-radius:12px;background:var(--bg-2)}
 .namebox input:focus{border-color:var(--ember)}
 .namebox input.bad{border-color:var(--no);animation:shake .3s}
+.rulebox{margin-top:12px;max-width:560px;background:rgba(255,107,107,.07);border:1px solid #5a2a34;border-radius:12px;padding:10px 14px;font-size:14px;color:var(--ink-soft)}
+.rulebox b{color:#ffb3b3}
+.rulebox ul{margin:6px 0;padding-left:1.2em}
+.rulebox p{margin:4px 0 0}
+.rulebox b.ok{color:var(--gold);font-family:var(--f-display);font-weight:400;font-size:17px}
 .msg{margin:6px 0 0;font-size:15px;min-height:1.4em}
 .msg.no{color:var(--no)} .msg.ok{color:var(--ok)}
 .modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 20px;border:0;padding:0}
@@ -354,7 +359,12 @@ body.compact .banner{aspect-ratio:auto;height:96px;object-fit:cover;object-posit
         <p class="eyebrow">이름</p>
         <div class="namebox">
           <label for="nameIn" hidden>이름</label>
-          <input id="nameIn" maxlength="12" placeholder="번호와 이름 (예: 12번 김하늘)" autocomplete="off">
+          <input id="nameIn" maxlength="12" placeholder="예: 3반 12번 김하늘" autocomplete="off">
+          <div class="rulebox">
+            <b>이름은 이렇게 써 주세요</b>
+            <p><b class="ok">3반 12번</b> 또는 <b class="ok">3반 12번 김하늘</b></p>
+            <p>이 규칙을 어긴 이름은 <b>선생님이 순위표에서 삭제해요.</b></p>
+          </div>
           <p class="msg no" id="nameMsg"></p>
         </div>
 
@@ -992,7 +1002,7 @@ function start(){
   const nameIn=$("nameIn"); const name=cleanName(nameIn.value);
   if(!name){
     show("vStart");
-    $("nameMsg").textContent="이름을 먼저 입력해 주세요. 순위표에 이 이름으로 올라가요.";
+    $("nameMsg").textContent="이름을 먼저 입력해 주세요. 예: 3반 12번 김하늘";
     restart(nameIn,"bad"); nameIn.focus(); Sfx.wrong(); return;
   }
   nameIn.classList.remove("bad"); $("nameMsg").textContent="";
